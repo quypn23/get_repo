@@ -2,17 +2,17 @@
 # Copyright Broadcom, Inc. All Rights Reserved.
 # SPDX-License-Identifier: APACHE-2.0
 #
-# Bitnami Redis library
+# redis Redis library
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/libfile.sh
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libnet.sh
-. /opt/bitnami/scripts/libos.sh
-. /opt/bitnami/scripts/libservice.sh
-. /opt/bitnami/scripts/libvalidations.sh
+. /opt/redis/scripts/libfile.sh
+. /opt/redis/scripts/liblog.sh
+. /opt/redis/scripts/libnet.sh
+. /opt/redis/scripts/libos.sh
+. /opt/redis/scripts/libservice.sh
+. /opt/redis/scripts/libvalidations.sh
 
 # Functions
 
