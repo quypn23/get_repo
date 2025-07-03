@@ -69,9 +69,51 @@ variable "network_tier" {
 variable "vm_desired_status" {
   description = "Desired status of the VM instance (RUNNING, TERMINATED, SUSPENDED)."
   type        = string
-  default     = "TERMINATED" # Mặc định là chạy
+  default     = "RUNNING" # Mặc định là chạy
   validation {
     condition     = contains(["RUNNING", "TERMINATED", "SUSPENDED"], upper(var.vm_desired_status))
     error_message = "VM desired status must be RUNNING, TERMINATED, or SUSPENDED."
+  }
+}
+
+# Biến mới để định nghĩa cấu hình cho từng VM cụ thể
+variable "vm_configs" {
+  description = "A map of specific configurations for each VM instance. Keys are unique identifiers."
+  type = map(object({
+    # Tên của VM. Đây là trường bắt buộc để xác định từng VM.
+    name              = string
+    # Các thuộc tính này là tùy chọn. Nếu không được cung cấp, nó sẽ dùng biến mặc định global
+    machine_type      = optional(string) # Ví dụ: "e2-standard-4" nếu muốn khác default
+    custom_vcpus      = optional(number) # Ví dụ: 4 nếu muốn khác default
+    custom_memory_gb  = optional(number) # Ví dụ: 8 nếu muốn khác default
+    boot_disk_image   = optional(string) # Ví dụ: "debian-cloud/debian-12" nếu muốn khác default
+    boot_disk_size    = optional(number) # Ví dụ: 60 nếu muốn khác default
+    startup_script    = optional(string, "") # Script khởi động riêng cho VM này
+    network_tier      = optional(string) # Ví dụ: "STANDARD" nếu muốn khác default)
+    #tags              = optional(list(string), ["ssh"]) # Các tag riêng
+  }))
+  default = {
+    "r-01" = {
+      name              = "r-01"
+      # Các thuộc tính khác sẽ lấy từ các biến mặc định global (ví dụ: e2-standard-2, ubuntu-2204, 40GB disk)
+    #   startup_script    = <<-EOT
+    #                       #!/bin/bash
+    #                       sudo apt-get update && sudo apt-get install -y nginx
+    #                       echo "<h1>Hello from Web Server 01!</h1>" | sudo tee /var/www/html/index.html
+    #                       EOT
+    #   tags              = ["http-server", "ssh"]
+    },
+    "t-01" = {
+      name              = "t-01"
+    #   custom_vcpus      = 2
+    #   custom_memory_gb  = 8
+    #   boot_disk_size    = 80
+    #   startup_script    = <<-EOT
+    #                       #!/bin/bash
+    #                       echo "Configuring Jenkins agent..."
+    #                       # Commands to setup Jenkins agent
+    #                       EOT
+    #   tags              = ["ssh", "jenkins-agent"]
+    }
   }
 }
